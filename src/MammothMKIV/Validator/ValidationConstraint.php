@@ -5,6 +5,16 @@ namespace MammothMKIV\Validator;
 abstract class ValidationConstraint
 {
     /**
+     * @var string
+     */
+    protected $name;
+    
+    public function __construct($name)
+    {
+        $this->name = $name;
+    }
+
+    /**
      * @param string $fieldName
      * @param string $fieldDescription
      * @return string
@@ -16,4 +26,12 @@ abstract class ValidationConstraint
      * @return bool
      */
     public abstract function validate($field);
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
 }

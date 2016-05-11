@@ -5,13 +5,22 @@ namespace MammothMKIV\Validator;
 class NotEmptyConstraint extends ValidationConstraint
 {
     /**
+     * NotEmptyConstraint constructor.
+     * @param string $name
+     */
+    public function __construct($name = 'not_empty')
+    {
+        parent::__construct($name);
+    }
+
+    /**
      * @param string $fieldName
      * @param string $fieldDescription
      * @return string
      */
     public function getErrorMessage($fieldName, $fieldDescription)
     {
-        return sprintf('Поле %s не может быть пустым', $fieldDescription);
+        return sprintf('%s cannot be empty', $fieldDescription);
     }
 
     /**

@@ -4,7 +4,21 @@ namespace MammothMKIV\Validator;
 
 class MaxStringLengthConstraint extends ValidationConstraint
 {
+    /**
+     * @var integer
+     */
     private $maxLength;
+
+    /**
+     * MaxStringLengthConstraint constructor.
+     * @param integer $maxLength
+     * @param string $name
+     */
+    public function __construct($maxLength, $name = 'max_length')
+    {
+        parent::__construct($name);
+        $this->maxLength = $maxLength;
+    }
 
     /**
      * @param string $fieldName
@@ -13,7 +27,7 @@ class MaxStringLengthConstraint extends ValidationConstraint
      */
     public function getErrorMessage($fieldName, $fieldDescription)
     {
-        return sprintf('Поле %s не должно быть длинее %d ' . Pluralizer::pluralize($this->maxLength, 'символов', 'символа', 'символов'), $fieldDescription, $this->maxLength);
+        return sprintf('%s shouldn\'t be longer than %d ' . Pluralizer::pluralize($this->maxLength, 'characters', 'character', 'characters'), $fieldDescription, $this->maxLength);
     }
 
     /**

@@ -12,15 +12,10 @@ class Validator
     /**
      * @var array
      */
-    private $constraints;
-
-    /**
-     * @var array
-     */
     private $errors;
 
     /**
-     * @var array
+     * @var FieldList
      */
     private $fields;
 
@@ -33,21 +28,11 @@ class Validator
     }
 
     /**
-     * @param string $fieldName
-     * @param ValidationConstraint|ValidationConstraint[] ...$constraints
-     * @throws \Exception
+     * Validator constructor.
      */
-    public function addConstraint($fieldName, ValidationConstraint... $constraints)
+    public function __construct()
     {
-        if (!isset($this->fields[$fieldName])) {
-            throw new \Exception('Field `' . $fieldName . '` does not exist');
-        }
-
-        if (!isset($this->constraints[$fieldName])) {
-            $this->constraints[$fieldName] = array();
-        }
-
-        $this->constraints[$fieldName] = array_merge($this->constraints[$fieldName], $constraints);
+        $this->fields = new FieldList();
     }
 
     /**
@@ -66,15 +51,6 @@ class Validator
         }
     }
 
-    public function getFieldDescription($fieldName)
-    {
-        if (isset($this->fields[$fieldName])) {
-            return $this->fields[$fieldName];
-        } else {
-            throw new \Exception('Field with such ID does not exist');
-        }
-    }
-
     /**
      * @return boolean
      */
@@ -82,14 +58,14 @@ class Validator
     {
         $this->errors = array();
 
-        foreach ($this->constraints as $fieldName => $constraintList) {
-            foreach ($constraintList as $constraint) {
+        foreach ($this->fields->getFields() as $fieldName => $field) {
+            foreach ($field->getConstraints() as $constraint) {
                 if (!$constraint->validate($this->getVar($fieldName))) {
                     if (!isset($this->errors[$fieldName])) {
                         $this->errors[$fieldName] = array();
                     }
 
-                    $this->errors[$fieldName][] = $constraint->getErrorMessage($fieldName, $this->getFieldDescription($fieldName));
+                    $this->errors[$fieldName][] = $constraint->getErrorMessage($field->getName(), $field->getDescription());
                 }
             }
         }
@@ -105,12 +81,12 @@ class Validator
         return $this->errors;
     }
 
-    public function addField($fieldName, $fieldDescription)
+    /**
+     * @param Field $field
+     * @throws DuplicateFieldException
+     */
+    public function addField(Field $field)
     {
-        if (!isset($this->fields[$fieldName])) {
-            $this->fields[$fieldName] = $fieldDescription;
-        } else {
-            throw new \Exception('Field with such ID already exists');
-        }
+        $this->fields->addField($field);
     }
 }

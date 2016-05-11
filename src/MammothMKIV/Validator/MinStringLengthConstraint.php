@@ -4,10 +4,19 @@ namespace MammothMKIV\Validator;
 
 class MinStringLengthConstraint extends ValidationConstraint
 {
+    /**
+     * @var integer
+     */
     private $minLength;
 
-    public function __construct($minLength)
+    /**
+     * MinStringLengthConstraint constructor.
+     * @param integer $minLength
+     * @param string $name
+     */
+    public function __construct($minLength, $name = 'min_length')
     {
+        parent::__construct($name);
         $this->minLength = $minLength;
     }
 
@@ -18,7 +27,7 @@ class MinStringLengthConstraint extends ValidationConstraint
      */
     public function getErrorMessage($fieldName, $fieldDescription)
     {
-        return sprintf('Поле %s не должно быть короче %d ' . Pluralizer::pluralize($this->minLength, 'символов', 'символа', 'символов'), $fieldDescription, $this->minLength);
+        return sprintf('%s shouldn\'t be shorter than %d ' . Pluralizer::pluralize($this->minLength, 'characters', 'character', 'characters'), $fieldDescription, $this->minLength);
     }
 
     /**
