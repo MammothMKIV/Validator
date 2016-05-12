@@ -4,7 +4,7 @@ require 'autoload.php';
 $testValidator = new \MammothMKIV\Validator\Validator();
 
 $testValidator->addField(
-    new \MammothMKIV\Validator\Field(
+    new \MammothMKIV\Validator\PlainField(
         'test_field',
         'Test Field',
         new \MammothMKIV\Validator\NotEmptyConstraint(),
@@ -13,8 +13,46 @@ $testValidator->addField(
     )
 );
 
-$testValidator->setData(array('test_field' => ''));
+$testValidator->addField(new \MammothMKIV\Validator\ArrayField(
+    'test_array_field',
+    'Test Array Field',
+    true,
+    new \MammothMKIV\Validator\PlainField(
+        'plain_field1',
+        'Plain Field 1',
+        new \MammothMKIV\Validator\NotEmptyConstraint(),
+        new \MammothMKIV\Validator\MinStringLengthConstraint(5),
+        new \MammothMKIV\Validator\MaxStringLengthConstraint(10)
+    ),
+    new \MammothMKIV\Validator\ArrayField(
+        'test_array_field_2',
+        'Test Array Field 2',
+        true,
+        new \MammothMKIV\Validator\PlainField(
+            'plain_field2',
+            'Plain Field 2',
+            new \MammothMKIV\Validator\NotEmptyConstraint(),
+            new \MammothMKIV\Validator\MinStringLengthConstraint(1),
+            new \MammothMKIV\Validator\MaxStringLengthConstraint(25)
+        )
+    )
+));
 
-$testValidator->validate();
+$testValidator->setData(array(
+    'test_field' => 'www',
+    'test_array_field' => array(
+        array(
+            'plain_field1' => 'Test1',
+            'test_array_field_2' => array(
+                array(
+                    'plain_field2' => '2132131131df'
+                )
+            )
+        ),
+        array('plain_field1' => 'sssss'),
+        array('plain_field1' => 'sssss'),
+        array('plain_field1' => 'Test ad '),
+    )
+));
 
-var_dump($testValidator->validate(), $testValidator->getErrors());
+echo json_encode($testValidator->getErrors(), JSON_PRETTY_PRINT);

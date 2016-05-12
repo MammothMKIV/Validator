@@ -37,17 +37,68 @@ class Validator
 
     /**
      * @param string $name
+     * @param mixed $data
      * @return mixed
      * @throws \Exception
      */
-    public function getVar($name)
+    public function getVar($name, $data)
     {
-        if (is_array($this->data)) {
-            return isset($this->data[$name]) ? $this->data[$name] : null;
-        } elseif (is_object($this->data)) {
-            return isset($this->data->$name) ? $this->data->$name : null;
+        if (is_array($data)) {
+            return isset($data[$name]) ? $data[$name] : null;
+        } elseif (is_object($data)) {
+            return isset($data->$name) ? $data->$name : null;
         } else {
-            throw new \Exception('Unknown data format');
+            return null;
+        }
+    }
+
+    protected function validateFields($fields, $data, &$errors)
+    {
+        foreach ($fields as $fieldName => $field) {
+            if ($field instanceof PlainField) {
+                foreach ($field->getConstraints() as $constraint) {
+                    if (!$constraint->validate($this->getVar($fieldName, $data))) {
+                        if (!isset($errors[$fieldName])) {
+                            $errors[$fieldName] = array();
+                        }
+
+                        $errors[$fieldName][] = $constraint->getErrorMessage($field->getName(), $field->getDescription());
+                    }
+                }
+            } elseif ($field instanceof ArrayField) {
+                $items = $this->getVar($fieldName, $data);
+
+                if ($items === null && $field->isOptional()) {
+                    continue;
+                }
+
+                if (!isset($errors[$fieldName])) {
+                    $errors[$fieldName] = array();
+                }
+
+                if (!is_array($items)) {
+                    $errors[$fieldName][] = sprintf('%s is not an array', $field->getDescription());
+                    continue;
+                }
+
+                if (!empty($items) && !is_array(reset($items))) {
+                    $errors[$fieldName][] = sprintf('Invalid array item in %s', $field->getDescription());
+                    continue;
+                }
+
+                foreach ($items as $index => $item) {
+                    $err = array();
+                    $this->validateFields($field->getItemFields()->getFields(), $item, $err);
+
+                    if ($err) {
+                        $errors[$fieldName]['item_' . $index] = $err;
+                    }
+                }
+
+                if (count($errors[$fieldName]) === 0) {
+                    unset($errors[$fieldName]);
+                }
+            }
         }
     }
 
@@ -58,17 +109,7 @@ class Validator
     {
         $this->errors = array();
 
-        foreach ($this->fields->getFields() as $fieldName => $field) {
-            foreach ($field->getConstraints() as $constraint) {
-                if (!$constraint->validate($this->getVar($fieldName))) {
-                    if (!isset($this->errors[$fieldName])) {
-                        $this->errors[$fieldName] = array();
-                    }
-
-                    $this->errors[$fieldName][] = $constraint->getErrorMessage($field->getName(), $field->getDescription());
-                }
-            }
-        }
+        $this->validateFields($this->fields->getFields(), $this->data, $this->errors);
 
         return empty($this->errors);
     }
