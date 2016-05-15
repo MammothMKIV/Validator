@@ -10,11 +10,6 @@ class PlainField extends Field
     private $constraints;
 
     /**
-     * @var FieldList
-     */
-    private $childFields;
-
-    /**
      * Field constructor.
      * @param string $name
      * @param string $description
@@ -24,8 +19,6 @@ class PlainField extends Field
     {
         parent::__construct($name, $description);
         $this->constraints = $constraints;
-        
-        $this->childFields = new FieldList();
     }
 
     /**
@@ -34,25 +27,6 @@ class PlainField extends Field
     public function addConstraints(ValidationConstraint... $constraints)
     {
         $this->constraints = array_merge($this->constraints, $constraints);
-    }
-
-    /**
-     * @param Field[] ...$fields
-     * @throws DuplicateFieldException
-     */
-    public function addChildren(Field... $fields)
-    {
-        foreach ($fields as $field) {
-            $this->childFields->addField($field);
-        }
-    }
-
-    /**
-     * @return array
-     */
-    public function getChildren()
-    {
-        return $this->childFields->getFields();
     }
 
     /**

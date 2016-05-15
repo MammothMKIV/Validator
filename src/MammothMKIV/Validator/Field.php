@@ -15,6 +15,11 @@ abstract class Field
     protected $description;
 
     /**
+     * @var boolean
+     */
+    protected $optional;
+
+    /**
      * Field constructor.
      * @param string $name
      * @param string $description
@@ -39,5 +44,23 @@ abstract class Field
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * @param boolean $optional
+     * @return Field
+     */
+    public function setOptional($optional)
+    {
+        $this->optional = $optional;
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isOptional()
+    {
+        return $this->optional;
     }
 }

@@ -38,6 +38,29 @@ $testValidator->addField(new \MammothMKIV\Validator\ArrayField(
     )
 ));
 
+$testValidator->addField((new \MammothMKIV\Validator\CompoundField(
+    'test_compound_field',
+    'Test Compound Field',
+    new \MammothMKIV\Validator\PlainField(
+        'cmp_plain_field',
+        'Compound Plain Field',
+        new \MammothMKIV\Validator\NotEmptyConstraint(),
+        new \MammothMKIV\Validator\MinStringLengthConstraint(1),
+        new \MammothMKIV\Validator\MaxStringLengthConstraint(25)
+    ),
+    new \MammothMKIV\Validator\CompoundField(
+        'nested_cmp_field',
+        'Nested Compound Field',
+        new \MammothMKIV\Validator\PlainField(
+            'cmp_plain_field',
+            'Compound Plain Field',
+            new \MammothMKIV\Validator\NotEmptyConstraint(),
+            new \MammothMKIV\Validator\MinStringLengthConstraint(1),
+            new \MammothMKIV\Validator\MaxStringLengthConstraint(25)
+        )
+    )))->setOptional(true)
+);
+
 $testValidator->setData(array(
     'test_field' => 'www',
     'test_array_field' => array(
@@ -52,6 +75,12 @@ $testValidator->setData(array(
         array('plain_field1' => 'sssss'),
         array('plain_field1' => 'sssss'),
         array('plain_field1' => 'Test ad '),
+    ),
+    'test_compound_field' => array(
+        'cmp_plain_field' => '1',
+        'nested_cmp_field' => array(
+            'cmp_plain_field' => '1sadasdasdasdasdasdadasdasdasdasdasdasda',
+        )
     )
 ));
 

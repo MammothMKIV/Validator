@@ -10,11 +10,6 @@ class ArrayField extends Field
     private $itemFields;
 
     /**
-     * @var boolean
-     */
-    private $optional;
-
-    /**
      * ArrayField constructor.
      * @param string $name
      * @param string $description
@@ -55,13 +50,5 @@ class ArrayField extends Field
     public function getDescription()
     {
         return $this->description;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isOptional()
-    {
-        return $this->optional;
     }
 }

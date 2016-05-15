@@ -98,6 +98,32 @@ class Validator
                 if (count($errors[$fieldName]) === 0) {
                     unset($errors[$fieldName]);
                 }
+            } elseif ($field instanceof CompoundField) {
+                $keyValues = $this->getVar($fieldName, $data);
+
+                if ($keyValues === null && $field->isOptional()) {
+                    continue;
+                }
+
+                if (!isset($errors[$fieldName])) {
+                    $errors[$fieldName] = array();
+                }
+
+                if (!is_array($keyValues)) {
+                    $errors[$fieldName][] = sprintf('%s is not an array', $field->getDescription());
+                    continue;
+                }
+
+                $err = array();
+                $this->validateFields($field->getFields(), $keyValues, $err);
+
+                if ($err) {
+                    $errors[$fieldName] = $err;
+                }
+
+                if (count($errors[$fieldName]) === 0) {
+                    unset($errors[$fieldName]);
+                }
             }
         }
     }
