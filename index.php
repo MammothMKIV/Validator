@@ -84,4 +84,6 @@ $testValidator->setData(array(
     )
 ));
 
+$testValidator->validate();
+
 echo json_encode($testValidator->getErrors(), JSON_PRETTY_PRINT);
