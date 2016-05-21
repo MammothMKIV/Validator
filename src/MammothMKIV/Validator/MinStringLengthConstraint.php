@@ -27,7 +27,7 @@ class MinStringLengthConstraint extends ValidationConstraint
      */
     public function getErrorMessage($fieldName, $fieldDescription)
     {
-        return sprintf('%s shouldn\'t be shorter than %d ' . Pluralizer::pluralize($this->minLength, 'characters', 'character', 'characters'), $fieldDescription, $this->minLength);
+        return sprintf('%s shouldn\'t be shorter than ||||%d|character|characters||||', $fieldDescription, $this->minLength);
     }
 
     /**

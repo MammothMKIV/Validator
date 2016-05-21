@@ -27,7 +27,7 @@ class MaxStringLengthConstraint extends ValidationConstraint
      */
     public function getErrorMessage($fieldName, $fieldDescription)
     {
-        return sprintf('%s shouldn\'t be longer than %d ' . Pluralizer::pluralize($this->maxLength, 'characters', 'character', 'characters'), $fieldDescription, $this->maxLength);
+        return sprintf('%s shouldn\'t be longer than ||||%d|character|characters||||', $fieldDescription, $this->maxLength);
     }
 
     /**

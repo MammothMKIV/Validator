@@ -20,6 +20,11 @@ class Validator
     private $fields;
 
     /**
+     * @var Pluralizer
+     */
+    private $pluralizer;
+
+    /**
      * @param mixed $data
      */
     public function setData($data)
@@ -33,6 +38,7 @@ class Validator
     public function __construct()
     {
         $this->fields = new FieldList();
+        $this->pluralizer = new Pluralizer('en');
     }
 
     /**
@@ -62,7 +68,7 @@ class Validator
                             $errors[$fieldName] = array();
                         }
 
-                        $errors[$fieldName][] = $constraint->getErrorMessage($field->getName(), $field->getDescription());
+                        $errors[$fieldName][] = $this->pluralizer->pluralize($constraint->getErrorMessage($field->getName(), $field->getDescription()));
                     }
                 }
             } elseif ($field instanceof ArrayField) {
