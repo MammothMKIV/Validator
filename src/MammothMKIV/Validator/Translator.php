@@ -2,12 +2,12 @@
 
 namespace MammothMKIV\Validator;
 
-interface Pluralizer
+interface Translator
 {
     /**
      * @param string $string
      * @param string $locale
      * @return string
      */
-    public function pluralize($string, $locale);
+    public function translate($string, $locale);
 }

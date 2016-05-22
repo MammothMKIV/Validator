@@ -20,9 +20,14 @@ class Validator
     private $fields;
 
     /**
-     * @var Pluralizer
+     * @var Translator
      */
-    private $pluralizer;
+    private $translator;
+
+    /**
+     * @var string
+     */
+    private $locale;
 
     /**
      * @param mixed $data
@@ -34,11 +39,14 @@ class Validator
 
     /**
      * Validator constructor.
+     * @param string $locale
+     * @param Translator $translator
      */
-    public function __construct()
+    public function __construct($locale, Translator $translator)
     {
         $this->fields = new FieldList();
-        $this->pluralizer = new Pluralizer('en');
+        $this->locale = $locale;
+        $this->translator = $translator;
     }
 
     /**
@@ -68,7 +76,7 @@ class Validator
                             $errors[$fieldName] = array();
                         }
 
-                        $errors[$fieldName][] = $this->pluralizer->pluralize($constraint->getErrorMessage($field->getName(), $field->getDescription()));
+                        $errors[$fieldName][] = $this->translator->translate($constraint->getErrorMessage($field->getName(), $field->getDescription()), $this->locale);
                     }
                 }
             } elseif ($field instanceof ArrayField) {
