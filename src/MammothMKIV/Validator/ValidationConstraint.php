@@ -8,7 +8,11 @@ abstract class ValidationConstraint
      * @var string
      */
     protected $name;
-    
+
+    /**
+     * ValidationConstraint constructor.
+     * @param string $name
+     */
     public function __construct($name)
     {
         $this->name = $name;

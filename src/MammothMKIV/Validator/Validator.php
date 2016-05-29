@@ -5,7 +5,7 @@ namespace MammothMKIV\Validator;
 class Validator
 {
     /**
-     * @var mixed
+     * @var object|array
      */
     private $data;
 
@@ -15,9 +15,9 @@ class Validator
     private $errors;
 
     /**
-     * @var FieldList
+     * @var CompoundField
      */
-    private $fields;
+    private $rootField;
 
     /**
      * @var Translator
@@ -30,7 +30,7 @@ class Validator
     private $locale;
 
     /**
-     * @param mixed $data
+     * @param object|array $data
      */
     public function setData($data)
     {
@@ -47,11 +47,12 @@ class Validator
         $this->fields = new FieldList();
         $this->locale = $locale;
         $this->translator = $translator;
+        $this->rootField = new CompoundField('root', '');
     }
 
     /**
      * @param string $name
-     * @param mixed $data
+     * @param object|array $data
      * @return mixed
      * @throws \Exception
      */
@@ -66,6 +67,33 @@ class Validator
         }
     }
 
+    /**
+     * @param string[] $names
+     * @param object|array $data
+     * @return mixed
+     */
+    public function getVars($names, $data)
+    {
+        $results = array();
+
+        foreach ($names as $name) {
+            if (is_array($data)) {
+                $results[$name] = isset($data[$name]) ? $data[$name] : null;
+            } elseif (is_object($data)) {
+                $results[$name] = isset($data->$name) ? $data->$name : null;
+            } else {
+                $results[$name] = null;
+            }
+        }
+
+        return $results;
+    }
+
+    /**
+     * @param array $fields
+     * @param array $data
+     * @param array $errors
+     */
     protected function validateFields($fields, $data, &$errors)
     {
         foreach ($fields as $fieldName => $field) {
@@ -138,6 +166,27 @@ class Validator
                 if (count($errors[$fieldName]) === 0) {
                     unset($errors[$fieldName]);
                 }
+
+                $constraints = $field->getConstraints();
+
+                foreach ($constraints as $constraint) {
+                    $fieldNames = $constraint->getFields();
+                    $keyValues = $this->getVars($fieldNames, $keyValues);
+
+                    $isValid = $constraint->validate($keyValues);
+
+                    if (!$isValid) {
+                        if (!isset($errors[$fieldName])) {
+                            $errors[$fieldName][$constraint->getTargetField()] = array();
+                        }
+
+                        if (!isset($errors[$fieldName][$constraint->getTargetField()])) {
+                            $errors[$fieldName][$constraint->getTargetField()] = array();
+                        }
+
+                        $errors[$fieldName][$constraint->getTargetField()][] = $this->translator->translate($constraint->getErrorMessage(), $this->locale);
+                    }
+                }
             }
         }
     }
@@ -149,7 +198,7 @@ class Validator
     {
         $this->errors = array();
 
-        $this->validateFields($this->fields->getFields(), $this->data, $this->errors);
+        $this->validateFields(array('root' => $this->rootField), array('root' => $this->data), $this->errors);
 
         return empty($this->errors);
     }
@@ -159,7 +208,15 @@ class Validator
      */
     public function getErrors()
     {
-        return $this->errors;
+        return empty($this->errors) ? array() : $this->errors['root'];
+    }
+
+    /**
+     * @return CompoundField
+     */
+    public function getRootField()
+    {
+        return $this->rootField;
     }
 
     /**
@@ -168,6 +225,14 @@ class Validator
      */
     public function addField(Field $field)
     {
-        $this->fields->addField($field);
+        $this->rootField->addFields($field);
+    }
+
+    /**
+     * @param CompoundValidationConstraint $constraint
+     */
+    public function addCompoundValidationConstraint(CompoundValidationConstraint $constraint)
+    {
+        $this->rootField->addConstraints($constraint);
     }
 }

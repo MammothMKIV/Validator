@@ -10,6 +10,11 @@ class CompoundField extends Field
     private $fields;
 
     /**
+     * @var CompoundValidationConstraint[]
+     */
+    private $constraints = array();
+
+    /**
      * CompoundField constructor.
      * @param string $name
      * @param string $description
@@ -23,14 +28,31 @@ class CompoundField extends Field
         $this->addFields($fields);
     }
 
+    public function addConstraints(CompoundValidationConstraint... $constraints)
+    {
+        $this->constraints = array_merge($this->constraints, $constraints);
+    }
+
+    /**
+     * @return CompoundValidationConstraint[]
+     */
+    public function getConstraints()
+    {
+        return $this->constraints;
+    }
+
     /**
      * @param Field|array ...$fields
      * @throws DuplicateFieldException
      */
     public function addFields($fields)
     {
-        foreach ((array)$fields as $field) {
-            $this->fields->addField($field);
+        if (is_array($fields)) {
+            foreach ((array)$fields as $field) {
+                $this->fields->addField($field);
+            }
+        } else {
+            $this->fields->addField($fields);
         }
     }
 

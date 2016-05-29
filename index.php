@@ -1,7 +1,7 @@
 <?php
 require 'autoload.php';
 
-$testValidator = new \MammothMKIV\Validator\Validator();
+$testValidator = new \MammothMKIV\Validator\Validator('en', new \MammothMKIV\Validator\SimpleTranslator());
 
 $testValidator->addField(
     new \MammothMKIV\Validator\PlainField(
@@ -38,6 +38,19 @@ $testValidator->addField(new \MammothMKIV\Validator\ArrayField(
     )
 ));
 
+$nestedCompoundField = new \MammothMKIV\Validator\CompoundField(
+    'nested_cmp_field',
+    'Nested Compound Field',
+    new \MammothMKIV\Validator\PlainField(
+        'cmp_plain_field',
+        'Compound Plain Field',
+        new \MammothMKIV\Validator\NotEmptyConstraint(),
+        new \MammothMKIV\Validator\MinStringLengthConstraint(1),
+        new \MammothMKIV\Validator\MaxStringLengthConstraint(25)
+    )
+);
+$nestedCompoundField->addConstraints(new \MammothMKIV\Validator\RepeatedFieldConstraint(array('password', 'password_confirmation'), 'password_confirmation'));
+
 $testValidator->addField((new \MammothMKIV\Validator\CompoundField(
     'test_compound_field',
     'Test Compound Field',
@@ -48,17 +61,7 @@ $testValidator->addField((new \MammothMKIV\Validator\CompoundField(
         new \MammothMKIV\Validator\MinStringLengthConstraint(1),
         new \MammothMKIV\Validator\MaxStringLengthConstraint(25)
     ),
-    new \MammothMKIV\Validator\CompoundField(
-        'nested_cmp_field',
-        'Nested Compound Field',
-        new \MammothMKIV\Validator\PlainField(
-            'cmp_plain_field',
-            'Compound Plain Field',
-            new \MammothMKIV\Validator\NotEmptyConstraint(),
-            new \MammothMKIV\Validator\MinStringLengthConstraint(1),
-            new \MammothMKIV\Validator\MaxStringLengthConstraint(25)
-        )
-    )))->setOptional(true)
+    $nestedCompoundField))->setOptional(true)
 );
 
 $testValidator->setData(array(
@@ -68,7 +71,7 @@ $testValidator->setData(array(
             'plain_field1' => 'Test1',
             'test_array_field_2' => array(
                 array(
-                    'plain_field2' => '2132131131df'
+                    'plain_field2' => '213dfgdfgdfgd131df'
                 )
             )
         ),
@@ -79,7 +82,9 @@ $testValidator->setData(array(
     'test_compound_field' => array(
         'cmp_plain_field' => '1',
         'nested_cmp_field' => array(
-            'cmp_plain_field' => '1sadasdasdasdasdasdadasdasdasdasdasdasda',
+            'cmp_plain_field' => '1sadvghccvhvchhvchcssda',
+            'password' => 1253,
+            'password_confirmation' => 123
         )
     )
 ));
@@ -87,3 +92,16 @@ $testValidator->setData(array(
 $testValidator->validate();
 
 echo json_encode($testValidator->getErrors(), JSON_PRETTY_PRINT);
+
+$testValidator2 = new \MammothMKIV\Validator\Validator('en', new \MammothMKIV\Validator\SimpleTranslator());
+
+$testValidator2->addCompoundValidationConstraint(new \MammothMKIV\Validator\RepeatedFieldConstraint(array('password', 'password_confirmation'), 'password_confirmation'));
+
+$testValidator2->setData(array(
+    'password' => '123',
+    'password_confirmation' => 'fffff'
+));
+
+$testValidator2->validate();
+
+echo json_encode($testValidator2->getErrors(), JSON_PRETTY_PRINT);
