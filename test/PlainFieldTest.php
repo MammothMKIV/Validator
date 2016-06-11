@@ -1,7 +1,5 @@
 <?php
 
-require '../autoload.php';
-
 class PlainFieldTest extends PHPUnit_Framework_TestCase
 {
     public function testGetDescription()

@@ -1,0 +1,21 @@
+{
+  "name": "MammothMKIV/Validator",
+  "description": "PHP validation library",
+  "license": "MIT",
+  "keywords": ["validator"],
+  "authors": [
+    {
+      "name": "Nikita Rogovoy",
+      "email": "mammothmkiv@gmail.com"
+    }
+  ],
+  "require": {},
+  "require-dev": {
+    "phpunit/phpunit": "4.0.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "MammothMKIV\\Validator\\": "src"
+    }
+  }
+}

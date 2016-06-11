@@ -1,7 +1,5 @@
 <?php
 
-require '../autoload.php';
-
 class SimplePluralizerTest extends PHPUnit_Framework_TestCase
 {
     public function testPluralizeSingle()
