@@ -1,5 +1,5 @@
 <?php
-require 'autoload.php';
+require 'vendor/autoload.php';
 
 $testValidator = new \MammothMKIV\Validator\Validator('en', new \MammothMKIV\Validator\SimpleTranslator());
 
