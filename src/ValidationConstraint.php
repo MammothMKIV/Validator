@@ -10,12 +10,19 @@ abstract class ValidationConstraint
     protected $name;
 
     /**
+     * @var string
+     */
+    protected $errorMessage;
+
+    /**
      * ValidationConstraint constructor.
      * @param string $name
+     * @param string $errorMessage
      */
-    public function __construct($name)
+    public function __construct($name, $errorMessage)
     {
         $this->name = $name;
+        $this->errorMessage = $errorMessage;
     }
 
     /**
@@ -24,6 +31,16 @@ abstract class ValidationConstraint
      * @return string
      */
     public abstract function getErrorMessage($fieldName, $fieldDescription);
+
+    /**
+     * @param string $errorMessage
+     * @return ValidationConstraint
+     */
+    public function setErrorMessage($errorMessage)
+    {
+        $this->errorMessage = $errorMessage;
+        return $this;
+    }
 
     /**
      * @param mixed $field

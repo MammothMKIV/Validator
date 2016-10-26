@@ -1,6 +1,6 @@
 <?php
 
-class SimplePluralizerTest extends PHPUnit_Framework_TestCase
+class SimplePluralizerRuTest extends PHPUnit_Framework_TestCase
 {
     public function testPluralizeSingle()
     {
@@ -8,7 +8,7 @@ class SimplePluralizerTest extends PHPUnit_Framework_TestCase
         $pluralizer = new \MammothMKIV\Validator\SimplePluralizer();
         $result = $pluralizer->pluralize($string, 'ru');
 
-        $this->assertEquals($result, 'Строка должна быть не короче 5 символов');
+        $this->assertEquals('Строка должна быть не короче 5 символов', $result);
     }
 
     public function testPluralizeMultiple()
@@ -17,7 +17,7 @@ class SimplePluralizerTest extends PHPUnit_Framework_TestCase
         $pluralizer = new \MammothMKIV\Validator\SimplePluralizer();
         $result = $pluralizer->pluralize($string, 'ru');
 
-        $this->assertEquals($result, 'Строка должна быть не короче 5 символов и длинее 31 символа');
+        $this->assertEquals('Строка должна быть не короче 5 символов и длинее 31 символа', $result);
     }
 
     public function testNonDefaultFormSeparator()
@@ -27,6 +27,6 @@ class SimplePluralizerTest extends PHPUnit_Framework_TestCase
         $pluralizer->setDelimiter('||');
         $result = $pluralizer->pluralize($string, 'ru');
 
-        $this->assertEquals($result, 'Строка должна быть не короче 5 символов и длинее 31 символа');
+        $this->assertEquals('Строка должна быть не короче 5 символов и длинее 31 символа', $result);
     }
 }

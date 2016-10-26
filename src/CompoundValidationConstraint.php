@@ -15,6 +15,11 @@ abstract class CompoundValidationConstraint
     protected $targetField;
 
     /**
+     * @var string
+     */
+    protected $errorMessage;
+
+    /**
      * ValidationConstraint constructor.
      * @param string[] $fields
      * @param string $targetField
@@ -29,6 +34,16 @@ abstract class CompoundValidationConstraint
      * @return string
      */
     public abstract function getErrorMessage();
+
+    /**
+     * @param $errorMessage
+     * @return CompoundValidationConstraint
+     */
+    public function setErrorMessage($errorMessage)
+    {
+        $this->errorMessage = $errorMessage;
+        return $this;
+    }
 
     /**
      * @param mixed[] $fieldValues

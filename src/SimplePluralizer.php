@@ -107,21 +107,10 @@ class SimplePluralizer implements Pluralizer
             $one = $forms[0];
             $many = $forms[1];
 
-            switch (true) {
-                case ($numeric % 100 == 1 || ($numeric % 100 > 20) && ($numeric % 10 == 1)):
-                    return $one;
-                    break;
-                case ($numeric % 100 == 2 || ($numeric % 100 > 20) && ($numeric % 10 == 2)):
-                    return $many;
-                    break;
-                case ($numeric % 100 == 3 || ($numeric % 100 > 20) && ($numeric % 10 == 3)):
-                    return $many;
-                    break;
-                case ($numeric % 100 == 4 || ($numeric % 100 > 20) && ($numeric % 10 == 4)):
-                    return $many;
-                    break;
-                default:
-                    return $many;
+            if ($number > 1) {
+                return $many;
+            } else {
+                return $one;
             }
         }
     }

@@ -10,16 +10,24 @@ class SimpleTranslator implements Translator
     private $pluralizer;
 
     /**
+     * @var string
+     */
+    private $locale;
+
+    /**
      * PlainTranslator constructor.
+     * @param string $locale
      * @param Pluralizer|null $pluralizer
      */
-    public function __construct(Pluralizer $pluralizer = null)
+    public function __construct($locale = 'en', Pluralizer $pluralizer = null)
     {
         if ($this->pluralizer) {
             $this->pluralizer = $pluralizer;
         } else {
             $this->pluralizer = new SimplePluralizer();
         }
+
+        $this->locale = $locale;
     }
 
     /**
@@ -32,11 +40,11 @@ class SimpleTranslator implements Translator
 
     /**
      * @param string $string
-     * @param string $locale
      * @return string
+     * @internal param string $locale
      */
-    public function translate($string, $locale)
+    public function translate($string)
     {
-        return $this->pluralizer->pluralize($string, $locale);
+        return $this->pluralizer->pluralize($string, $this->locale);
     }
 }

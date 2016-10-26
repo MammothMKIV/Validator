@@ -25,11 +25,6 @@ class Validator
     private $translator;
 
     /**
-     * @var string
-     */
-    private $locale;
-
-    /**
      * @param object|array $data
      */
     public function setData($data)
@@ -39,15 +34,27 @@ class Validator
 
     /**
      * Validator constructor.
-     * @param string $locale
      * @param Translator $translator
      */
-    public function __construct($locale, Translator $translator)
+    public function __construct(Translator $translator = null)
     {
         $this->fields = new FieldList();
-        $this->locale = $locale;
+
+        if (!$translator) {
+            $translator = new SimpleTranslator();
+        }
+
         $this->translator = $translator;
+
         $this->rootField = new CompoundField('root', '');
+    }
+
+    /**
+     * @param Translator $translator
+     */
+    public function setTranslator(Translator $translator)
+    {
+        $this->translator = $translator;
     }
 
     /**
@@ -104,7 +111,7 @@ class Validator
                             $errors[$fieldName] = array();
                         }
 
-                        $errors[$fieldName][] = $this->translator->translate($constraint->getErrorMessage($field->getName(), $field->getDescription()), $this->locale);
+                        $errors[$fieldName][] = $this->translator->translate($constraint->getErrorMessage($field->getName(), $field->getDescription()));
                     }
                 }
             } elseif ($field instanceof ArrayField) {
@@ -184,7 +191,7 @@ class Validator
                             $errors[$fieldName][$constraint->getTargetField()] = array();
                         }
 
-                        $errors[$fieldName][$constraint->getTargetField()][] = $this->translator->translate($constraint->getErrorMessage(), $this->locale);
+                        $errors[$fieldName][$constraint->getTargetField()][] = $this->translator->translate($constraint->getErrorMessage());
                     }
                 }
             }

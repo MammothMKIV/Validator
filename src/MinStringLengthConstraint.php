@@ -16,7 +16,7 @@ class MinStringLengthConstraint extends ValidationConstraint
      */
     public function __construct($minLength, $name = 'min_length')
     {
-        parent::__construct($name);
+        parent::__construct($name, '%s shouldn\'t be shorter than ||||%d|character|characters||||');
         $this->minLength = $minLength;
     }
 
@@ -27,7 +27,7 @@ class MinStringLengthConstraint extends ValidationConstraint
      */
     public function getErrorMessage($fieldName, $fieldDescription)
     {
-        return sprintf('%s shouldn\'t be shorter than ||||%d|character|characters||||', $fieldDescription, $this->minLength);
+        return sprintf($this->errorMessage, $fieldDescription, $this->minLength);
     }
 
     /**

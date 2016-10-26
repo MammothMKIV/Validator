@@ -6,8 +6,7 @@ interface Translator
 {
     /**
      * @param string $string
-     * @param string $locale
      * @return string
      */
-    public function translate($string, $locale);
+    public function translate($string);
 }

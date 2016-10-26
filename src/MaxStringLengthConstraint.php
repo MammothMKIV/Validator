@@ -16,7 +16,7 @@ class MaxStringLengthConstraint extends ValidationConstraint
      */
     public function __construct($maxLength, $name = 'max_length')
     {
-        parent::__construct($name);
+        parent::__construct($name, '%s shouldn\'t be longer than ||||%d|character|characters||||');
         $this->maxLength = $maxLength;
     }
 
@@ -27,7 +27,7 @@ class MaxStringLengthConstraint extends ValidationConstraint
      */
     public function getErrorMessage($fieldName, $fieldDescription)
     {
-        return sprintf('%s shouldn\'t be longer than ||||%d|character|characters||||', $fieldDescription, $this->maxLength);
+        return sprintf($this->errorMessage, $fieldDescription, $this->maxLength);
     }
 
     /**

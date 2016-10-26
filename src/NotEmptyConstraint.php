@@ -10,7 +10,7 @@ class NotEmptyConstraint extends ValidationConstraint
      */
     public function __construct($name = 'not_empty')
     {
-        parent::__construct($name);
+        parent::__construct($name, '%s cannot be empty');
     }
 
     /**
@@ -20,7 +20,7 @@ class NotEmptyConstraint extends ValidationConstraint
      */
     public function getErrorMessage($fieldName, $fieldDescription)
     {
-        return sprintf('%s cannot be empty', $fieldDescription);
+        return sprintf($this->errorMessage, $fieldDescription);
     }
 
     /**
